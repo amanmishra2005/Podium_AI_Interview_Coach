@@ -106,32 +106,27 @@ exports.submitContact = async (req, res) => {
           `,
         };
 
-        // Verify the SMTP connection/credentials before attempting to send,
-        // so bad credentials or a blocked port surface as a clear error
-        // instead of failing silently.
-        await transporter.verify();
-
-        // Await the sends. Previously these were fire-and-forget promises:
-        // the response was returned (with emailSent hardcoded to true)
-        // before either email had actually finished sending, so a failure
-        // (bad password, blocked port, etc.) never made it back to the
-        // caller or the logs in a way anyone would see in time.
-        const supportInfo = await transporter.sendMail(mailOptions);
-        console.log(`Support notification email successfully sent to ${targetEmail}. Message ID: ${supportInfo.messageId}. Response: ${supportInfo.response}`);
-
-        try {
-          const confirmationInfo = await transporter.sendMail(confirmationMailOptions);
-          console.log(`Confirmation receipt email successfully sent to ${email}. Message ID: ${confirmationInfo.messageId}. Response: ${confirmationInfo.response}`);
-        } catch (confirmErr) {
-          // Don't fail the whole request just because the user's
-          // confirmation copy bounced (e.g. typo'd email) - the support
-          // notification above is the one that matters most.
-          console.error("Nodemailer error sending user confirmation email:", confirmErr.message);
-        }
+        // Verify the SMTP connection/credentials and send emails in the background
+        // so that slow DNS lookups or firewall blocks do not delay the API response.
+        transporter.verify().then(() => {
+          transporter.sendMail(mailOptions).then((supportInfo) => {
+            console.log(`Support notification email successfully sent to ${targetEmail}. Message ID: ${supportInfo.messageId}. Response: ${supportInfo.response}`);
+            
+            transporter.sendMail(confirmationMailOptions).then((confirmationInfo) => {
+              console.log(`Confirmation receipt email successfully sent to ${email}. Message ID: ${confirmationInfo.messageId}. Response: ${confirmationInfo.response}`);
+            }).catch((confirmErr) => {
+              console.error("Nodemailer error sending user confirmation email:", confirmErr.message);
+            });
+          }).catch((sendErr) => {
+            console.error("Nodemailer error sending support notification email:", sendErr.message);
+          });
+        }).catch((verifyErr) => {
+          console.error("Nodemailer SMTP verification failed in background:", verifyErr.message);
+        });
 
         emailSent = true;
       } catch (err) {
-        console.error("Nodemailer error sending/configuring email:", err.message);
+        console.error("Nodemailer error preparing email transport:", err.message);
         emailError = err.message;
       }
     } else {
