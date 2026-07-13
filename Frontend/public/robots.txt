@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /interview/
+Disallow: /feedback/
+Disallow: /history
+
+Sitemap: https://podiumaiinterviewer.in/sitemap.xml
