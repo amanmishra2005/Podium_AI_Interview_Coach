@@ -132,7 +132,8 @@ export default function Landing() {
     setSuccess(null);
     setError(null);
     try {
-      // 1. Submit email via Web3Forms client-side API (allowed on Free tier)
+      // 1. Submit email via Web3Forms client-side API
+      const web3Key = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '1e572bee-4d56-4281-9f58-82d65653d575';
       const emailPromise = fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
@@ -140,27 +141,30 @@ export default function Landing() {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '1e572bee-4d56-4281-9f58-82d65653d575',
+          access_key: web3Key,
           name: formData.name,
           email: formData.email,
           subject: `[Podium Contact Form] New ${formData.type.toUpperCase()}: ${formData.name}`,
           message: `Name: ${formData.name}\nEmail: ${formData.email}\nType: ${formData.type.toUpperCase()}\n\nMessage:\n${formData.message}`,
           from_name: 'Podium App'
         })
-      });
+      }).then(res => res.json()).catch(err => ({ success: false, error: err.message }));
 
-      // 2. Submit to local backend to persist in MongoDB database
-      const dbPromise = api.post('/contact', formData);
+      // 2. Submit to local backend to persist in MongoDB database & trigger email notification
+      const dbPromise = api.post('/contact', formData).catch(err => ({ success: false, error: err }));
 
-      // Await both promises in parallel
-      const [emailResponse, dbResponse] = await Promise.all([emailPromise, dbPromise]);
-      const emailData = await emailResponse.json();
+      // Await both in parallel
+      const [emailData, dbResponse] = await Promise.all([emailPromise, dbPromise]);
 
-      if (emailData.success) {
+      const isEmailSuccess = emailData && emailData.success;
+      const isDbSuccess = dbResponse && (dbResponse.status === 200 || dbResponse.status === 201);
+
+      if (isEmailSuccess || isDbSuccess) {
         setSuccess('Thank you! Your message has been received.');
         setFormData(prev => ({ ...prev, message: '' }));
       } else {
-        setError(emailData.message || 'Something went wrong. Please try again.');
+        const errorMsg = (emailData && emailData.message) || dbResponse?.data?.message || 'Something went wrong. Please try again.';
+        setError(errorMsg);
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Something went wrong. Please try again.');
