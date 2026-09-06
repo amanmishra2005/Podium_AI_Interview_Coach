@@ -133,7 +133,7 @@ export default function Landing() {
     setError(null);
     try {
       // 1. Submit email via Web3Forms client-side API
-      const web3Key = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '1e572bee-4d56-4281-9f58-82d65653d575';
+      const web3Key = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || 'd072fdff-f810-43de-8a1c-131ceadbd76a';
       const emailPromise = fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
