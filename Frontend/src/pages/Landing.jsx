@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   UploadCloud, ListChecks, MessagesSquare, Gauge,
   Mic, Sparkles, ArrowRight, CheckCircle2, Quote,
-  Send, Info, Radio
+  Send, Info, Radio, Mail
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
@@ -368,6 +368,23 @@ export default function Landing() {
                   <div>
                     <h4 className="font-display font-semibold text-sm text-porcelain">Response time</h4>
                     <p className="text-xs text-slate mt-1">Usually under 24 hours on weekdays.</p>
+                  </div>
+                </div>
+              </Reveal>
+
+              <Reveal delay={200}>
+                <div className="tilt-card card-glass rounded-2xl p-6 flex items-start gap-4 hover:border-gold/30 transition-colors group">
+                  <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center shrink-0 border border-gold/20 group-hover:scale-110 group-hover:bg-gold/20 transition-all duration-300">
+                    <Mail className="text-gold-soft" size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-display font-semibold text-sm text-porcelain">Support email</h4>
+                    <a
+                      href="mailto:support@podiumaiinterviewer.in"
+                      className="text-xs text-gold-soft hover:underline mt-1 inline-block font-mono font-medium"
+                    >
+                      support@podiumaiinterviewer.in
+                    </a>
                   </div>
                 </div>
               </Reveal>

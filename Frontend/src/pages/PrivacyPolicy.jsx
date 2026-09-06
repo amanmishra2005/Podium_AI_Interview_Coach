@@ -80,7 +80,7 @@ export default function PrivacyPolicy() {
           <section className="space-y-2">
             <h3 className="font-display font-semibold text-porcelain text-base">4. Data Management & Retention</h3>
             <p>
-              Your passwords are encrypted using bcrypt. You can view, read, and delete your historical mock interviews from your dashboard at any time. If you wish to delete your account and all associated resumes entirely, contact our support team to clear your database records.
+              Your passwords are encrypted using bcrypt. You can view, read, and delete your historical mock interviews from your dashboard at any time. If you wish to delete your account and all associated resumes entirely, contact our support team at <a href="mailto:support@podiumaiinterviewer.in" className="text-gold-soft hover:underline font-mono">support@podiumaiinterviewer.in</a> to clear your database records.
             </p>
           </section>
         </div>
