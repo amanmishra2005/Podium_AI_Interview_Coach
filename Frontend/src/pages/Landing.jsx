@@ -384,10 +384,10 @@ export default function Landing() {
                   <div>
                     <h4 className="font-display font-semibold text-sm text-porcelain">Support email</h4>
                     <a
-                      href="mailto:support@podiumaiinterviewer.in"
+                      href="mailto:support.podium@gmail.com"
                       className="text-xs text-gold-soft hover:underline mt-1 inline-block font-mono font-medium"
                     >
-                      support@podiumaiinterviewer.in
+                      support.podium@gmail.com
                     </a>
                   </div>
                 </div>

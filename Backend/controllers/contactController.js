@@ -24,7 +24,7 @@ exports.submitContact = async (req, res) => {
     const contact = await Contact.create({ name, email, type, message });
 
     // Send email notification if SMTP host & credentials are set
-    const recipientEmail = process.env.CONTACT_RECEIVER_EMAIL || "support@podiumaiinterviewer.in";
+    const recipientEmail = process.env.CONTACT_RECEIVER_EMAIL || "support.podium@gmail.com";
     if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
       try {
         const transporter = nodemailer.createTransport({
